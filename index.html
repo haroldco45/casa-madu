@@ -60,7 +60,7 @@
 
     /* HEADER */
     header { background:linear-gradient(140deg,#1e3a0f 0%,var(--verde) 55%,var(--verde-claro) 100%); padding:0 0 14px; overflow:hidden; }
-    .hero-img { width:100%; display:block; max-height:270px; object-fit:cover; object-position:center top; border-bottom:4px solid var(--amarillo); }
+    .hero-img { width:100%; display:block; height:auto; object-fit:contain; border-bottom:4px solid var(--amarillo); }
     .header-info { padding:12px 18px 0; display:flex; flex-direction:column; align-items:center; }
     .logo-txt { font-family:'Playfair Display',serif; color:#fff; text-align:center; }
     .logo-txt span { font-size:2rem; line-height:1; display:block; }
@@ -84,9 +84,9 @@
     .card { background:#fff; border-radius:20px; box-shadow:var(--sombra); overflow:hidden; transition:transform .15s; }
     .card:active { transform:scale(.985); }
 
-    .card-img-wrap { width:100%; height:190px; overflow:hidden; position:relative; background:#f5f0e8; }
-    .card-img { width:100%; height:100%; object-fit:cover; object-position:center; transition:transform .35s ease; }
-    .card:hover .card-img { transform:scale(1.06); }
+    .card-img-wrap { width:100%; overflow:hidden; position:relative; background:#f5f0e8; }
+    .card-img { width:100%; height:auto; display:block; object-fit:contain; transition:transform .35s ease; }
+    .card:hover .card-img { transform:scale(1.03); }
 
     .card-tag { position:absolute; top:10px; right:10px; background:var(--naranja); color:#fff;
       font-size:.65rem; font-weight:900; padding:4px 10px; border-radius:20px; letter-spacing:.5px; }
