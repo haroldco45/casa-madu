@@ -60,7 +60,7 @@
 
     /* HEADER */
     header { background:linear-gradient(140deg,#1e3a0f 0%,var(--verde) 55%,var(--verde-claro) 100%); padding:0 0 14px; overflow:hidden; }
-    .hero-img { width:100%; display:block; height:auto; object-fit:contain; border-bottom:4px solid var(--amarillo); }
+    .hero-img { width:100%; display:block; max-height:320px; object-fit:cover; object-position:center 30%; border-bottom:4px solid var(--amarillo); }
     .header-info { padding:12px 18px 0; display:flex; flex-direction:column; align-items:center; }
     .logo-txt { font-family:'Playfair Display',serif; color:#fff; text-align:center; }
     .logo-txt span { font-size:2rem; line-height:1; display:block; }
@@ -80,13 +80,14 @@
     .sec-titulo p { font-size:.78rem; color:#888; margin-top:3px; }
 
     /* CARDS */
-    .grid { display:flex; flex-direction:column; gap:16px; padding:14px 16px 24px; }
+    .grid { display:grid; grid-template-columns:1fr; gap:16px; padding:14px 16px 24px; max-width:900px; margin:0 auto; }
+    @media(min-width:600px){ .grid{ grid-template-columns:1fr 1fr; } }
     .card { background:#fff; border-radius:20px; box-shadow:var(--sombra); overflow:hidden; transition:transform .15s; }
     .card:active { transform:scale(.985); }
 
-    .card-img-wrap { width:100%; overflow:hidden; position:relative; background:#f5f0e8; }
-    .card-img { width:100%; height:auto; display:block; object-fit:contain; transition:transform .35s ease; }
-    .card:hover .card-img { transform:scale(1.03); }
+    .card-img-wrap { width:100%; height:200px; overflow:hidden; position:relative; background:#f5f0e8; display:flex; align-items:center; justify-content:center; }
+    .card-img { max-width:100%; max-height:200px; width:auto; height:auto; display:block; object-fit:contain; transition:transform .35s ease; }
+    .card:hover .card-img { transform:scale(1.04); }
 
     .card-tag { position:absolute; top:10px; right:10px; background:var(--naranja); color:#fff;
       font-size:.65rem; font-weight:900; padding:4px 10px; border-radius:20px; letter-spacing:.5px; }
