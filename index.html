@@ -1,1 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Casa Madu — Buñuelitos de Maduro</title>
+  <meta name="description" content="Deliciosos buñuelitos de maduro artesanales, sin gluten y congelados. Pide al WhatsApp." />
+  <meta name="theme-color" content="#2D5016" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <meta property="og:title" content="Casa Madu — Buñuelitos de Maduro" />
+  <meta property="og:description" content="Artesanales · Sin Gluten · Congelados. ¡Haz tu pedido y disfruta un antojo en casa!" />
+  <meta property="og:image" content="img/hero.jpg" />
+  <meta property="og:url" content="https://casamadu.netlify.app" />
+  <meta name="twitter:card" content="summary_large_image" />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --verde:        #2D5016;
+      --verde-claro:  #4a7c2f;
+      --amarillo:     #D4A017;
+      --crema:        #FFF8E7;
+      --naranja:      #C85A1A;
+      --cafe:         #3E2204;
+      --sombra:       0 4px 24px rgba(45,80,22,0.14);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Nunito',sans-serif; background:var(--crema); color:var(--cafe); overflow-x:hidden; }
+
+    /* SPLASH */
+    #splash {
+      position:fixed; inset:0;
+      background:linear-gradient(150deg,#1e3a0f 0%,var(--verde-claro) 100%);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      z-index:999; transition:opacity .5s ease;
+    }
+    #splash.hide { opacity:0; pointer-events:none; }
+    .splash-bowl { width:130px; height:130px; border-radius:50%; object-fit:cover;
+      box-shadow:0 8px 32px rgba(0,0,0,.4);
+      animation:popIn .65s cubic-bezier(.34,1.56,.64,1); }
+    @keyframes popIn { from{transform:scale(0) rotate(-20deg)} to{transform:scale(1) rotate(0)} }
+    .splash-logo { font-family:'Playfair Display',serif; color:#fff; font-size:2.8rem; text-align:center; margin-top:14px; line-height:1; }
+    .splash-tag { color:var(--amarillo); font-size:.76rem; font-weight:800; letter-spacing:3px; margin-top:8px; text-transform:uppercase; }
+    .splash-credit { position:absolute; bottom:18px; color:rgba(255,255,255,.3); font-size:.58rem; text-align:center; }
+
+    /* INSTALL BANNER */
+    #install-banner { display:none; position:fixed; bottom:84px; left:14px; right:14px;
+      background:#fff; border-radius:16px; padding:12px 14px;
+      box-shadow:0 8px 30px rgba(0,0,0,.18); z-index:150; align-items:center; gap:10px; }
+    #install-banner.show { display:flex; }
+    .ib-text { flex:1; font-size:.8rem; font-weight:700; color:var(--cafe); }
+    .ib-text small { display:block; font-weight:400; color:#999; font-size:.7rem; }
+    .ib-ok { background:var(--verde); color:#fff; border:none; border-radius:10px;
+      padding:8px 13px; font-family:'Nunito',sans-serif; font-size:.75rem; font-weight:800; cursor:pointer; }
+    .ib-no { background:none; border:none; font-size:1.1rem; color:#ccc; cursor:pointer; }
+
+    /* HEADER */
+    header { background:linear-gradient(140deg,#1e3a0f 0%,var(--verde) 55%,var(--verde-claro) 100%); padding:0 0 14px; overflow:hidden; }
+    .hero-img { width:100%; display:block; max-height:270px; object-fit:cover; object-position:center top; border-bottom:4px solid var(--amarillo); }
+    .header-info { padding:12px 18px 0; display:flex; flex-direction:column; align-items:center; }
+    .logo-txt { font-family:'Playfair Display',serif; color:#fff; text-align:center; }
+    .logo-txt span { font-size:2rem; line-height:1; display:block; }
+    .logo-txt small { font-size:.65rem; letter-spacing:2.5px; color:var(--amarillo); text-transform:uppercase; font-family:'Nunito',sans-serif; font-weight:800; }
+    .badges { display:flex; gap:7px; flex-wrap:wrap; justify-content:center; margin-top:10px; }
+    .badge { background:rgba(255,255,255,.13); color:#fff; font-size:.65rem; font-weight:800; padding:3px 10px; border-radius:20px; letter-spacing:.5px; }
+
+    /* RELOJ */
+    .reloj-bar { background:var(--verde); color:var(--amarillo); text-align:center; font-size:.73rem; font-weight:800; padding:5px 10px; letter-spacing:.8px; }
+
+    /* AVISO */
+    .aviso { background:var(--amarillo); color:var(--cafe); text-align:center; padding:7px 14px; font-size:.78rem; font-weight:900; }
+
+    /* TITULO SECCIÓN */
+    .sec-titulo { text-align:center; padding:20px 16px 4px; }
+    .sec-titulo h2 { font-family:'Playfair Display',serif; color:var(--verde); font-size:1.45rem; }
+    .sec-titulo p { font-size:.78rem; color:#888; margin-top:3px; }
+
+    /* CARDS */
+    .grid { display:flex; flex-direction:column; gap:16px; padding:14px 16px 24px; }
+    .card { background:#fff; border-radius:20px; box-shadow:var(--sombra); overflow:hidden; transition:transform .15s; }
+    .card:active { transform:scale(.985); }
+
+    .card-img-wrap { width:100%; height:190px; overflow:hidden; position:relative; background:#f5f0e8; }
+    .card-img { width:100%; height:100%; object-fit:cover; object-position:center; transition:transform .35s ease; }
+    .card:hover .card-img { transform:scale(1.06); }
+
+    .card-tag { position:absolute; top:10px; right:10px; background:var(--naranja); color:#fff;
+      font-size:.65rem; font-weight:900; padding:4px 10px; border-radius:20px; letter-spacing:.5px; }
+    .card-tag.esp { background:var(--amarillo); color:var(--cafe); }
+
+    .card-strip { height:5px; }
+    .s-verde   { background:var(--verde); }
+    .s-amarillo{ background:var(--amarillo); }
+    .s-naranja { background:var(--naranja); }
+
+    .card-body { padding:13px 15px 15px; }
+    .card-nombre { font-family:'Playfair Display',serif; font-size:1.08rem; color:var(--cafe); }
+    .card-desc { font-size:.76rem; color:#999; margin-top:2px; line-height:1.4; }
+    .card-precio-row { display:flex; align-items:baseline; gap:6px; margin-top:7px; }
+    .card-precio { font-size:1.25rem; font-weight:900; color:var(--verde); }
+    .card-und { font-size:.7rem; color:#bbb; }
+
+    .card-controles { display:flex; align-items:center; gap:10px; margin-top:11px; }
+    .btn-c { width:34px; height:34px; border-radius:50%; border:2px solid var(--verde); background:transparent;
+      color:var(--verde); font-size:1.25rem; font-weight:900; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; transition:background .12s,color .12s; }
+    .btn-c:active { background:var(--verde); color:#fff; }
+    .cant { font-size:1.1rem; font-weight:900; min-width:22px; text-align:center; }
+    .btn-add { margin-left:auto; background:var(--verde); color:#fff; border:none; border-radius:12px;
+      padding:8px 16px; font-size:.78rem; font-weight:800; cursor:pointer; font-family:'Nunito',sans-serif;
+      transition:background .15s,transform .1s; }
+    .btn-add:active { transform:scale(.95); }
+    .btn-add.ok { background:var(--amarillo); color:var(--cafe); }
+
+    /* FAB CARRITO */
+    .carrito-fab { position:fixed; bottom:20px; right:16px;
+      background:var(--verde); color:#fff; border:none; border-radius:50px; padding:13px 20px;
+      font-size:1rem; font-weight:900; cursor:pointer; box-shadow:0 6px 22px rgba(45,80,22,.45);
+      display:flex; align-items:center; gap:8px; z-index:100; font-family:'Nunito',sans-serif;
+      transform:translateY(110px); transition:transform .35s cubic-bezier(.34,1.56,.64,1); }
+    .carrito-fab.vis { transform:translateY(0); }
+    .fab-badge { background:var(--naranja); color:#fff; border-radius:50%; width:22px; height:22px;
+      font-size:.7rem; font-weight:900; display:flex; align-items:center; justify-content:center; }
+
+    /* OVERLAY + DRAWER */
+    .overlay { position:fixed; inset:0; background:rgba(0,0,0,.52); z-index:200; display:none; opacity:0; transition:opacity .25s; }
+    .overlay.show { display:block; opacity:1; }
+    .drawer { position:fixed; bottom:0; left:0; right:0; background:var(--crema); border-radius:24px 24px 0 0;
+      z-index:201; max-height:90vh; overflow-y:auto; transform:translateY(100%);
+      transition:transform .35s cubic-bezier(.32,.72,0,1); padding-bottom:env(safe-area-inset-bottom,20px); }
+    .drawer.open { transform:translateY(0); }
+    .handle { width:40px; height:4px; background:#ddd; border-radius:2px; margin:12px auto 4px; }
+    .drawer-title { font-family:'Playfair Display',serif; color:var(--verde); font-size:1.3rem; text-align:center; padding:6px 16px 10px; }
+
+    /* ITEMS CARRITO */
+    .ci { display:flex; align-items:center; gap:10px; padding:10px 16px; border-bottom:1px solid #eee; }
+    .ci-foto { width:54px; height:54px; border-radius:10px; object-fit:cover; flex-shrink:0; }
+    .ci-info { flex:1; }
+    .ci-nom { font-weight:800; font-size:.88rem; }
+    .ci-sub { font-size:.73rem; color:#999; }
+    .ci-ctls { display:flex; align-items:center; gap:7px; }
+    .ci-btn { width:28px; height:28px; border-radius:50%; border:1.5px solid var(--verde); background:transparent;
+      color:var(--verde); font-size:1rem; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    .ci-q { font-weight:900; min-width:18px; text-align:center; font-size:.95rem; }
+
+    .drawer-total { display:none; justify-content:space-between; align-items:center; padding:12px 18px 4px; font-size:1rem; }
+    .drawer-total b { color:var(--verde); font-size:1.2rem; }
+    .vacio { text-align:center; padding:30px; color:#bbb; font-size:.9rem; }
+
+    /* CHECKOUT */
+    .checkout { padding:8px 16px 16px; }
+    .lbl { font-size:.77rem; font-weight:800; color:var(--cafe); margin-bottom:3px; display:block; }
+    .inp { width:100%; padding:10px 14px; border-radius:12px; border:2px solid #e0d5c5; background:#fff;
+      font-family:'Nunito',sans-serif; font-size:.88rem; color:var(--cafe); margin-bottom:10px; outline:none; transition:border-color .2s; }
+    .inp:focus { border-color:var(--verde); }
+    .btn-gps { width:100%; background:#f2f2f2; color:var(--cafe); border:2px solid #e0d5c5; border-radius:12px;
+      padding:10px; font-family:'Nunito',sans-serif; font-size:.8rem; font-weight:800; cursor:pointer; margin-bottom:10px;
+      display:flex; align-items:center; justify-content:center; gap:6px; transition:background .2s; }
+    .btn-gps.ok { background:#e8f5e9; border-color:var(--verde); color:var(--verde); }
+    .btn-wa { width:100%; background:linear-gradient(135deg,#25D366,#128C7E); color:#fff; border:none;
+      border-radius:14px; padding:15px; font-size:1rem; font-weight:900; cursor:pointer; font-family:'Nunito',sans-serif;
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      box-shadow:0 4px 18px rgba(37,211,102,.4); margin-top:4px; }
+
+    /* ÉXITO */
+    #exito { display:none; flex-direction:column; align-items:center; justify-content:center;
+      text-align:center; min-height:70vh; padding:40px 20px; }
+    #exito.show { display:flex; }
+    .exito-img { width:150px; height:150px; border-radius:50%; object-fit:cover;
+      box-shadow:0 8px 30px rgba(45,80,22,.25); animation:popIn .65s cubic-bezier(.34,1.56,.64,1); }
+    .exito-h { font-family:'Playfair Display',serif; font-size:1.7rem; color:var(--verde); margin-top:18px; }
+    .exito-p { font-size:.88rem; color:#888; margin-top:6px; line-height:1.6; }
+    .btn-volver { margin-top:24px; background:var(--verde); color:#fff; border:none; border-radius:14px;
+      padding:13px 30px; font-size:.95rem; font-weight:800; cursor:pointer; font-family:'Nunito',sans-serif; }
+
+    /* FOOTER */
+    footer { background:var(--verde); color:rgba(255,255,255,.65); text-align:center; padding:16px; font-size:.68rem; margin-top:10px; }
+    footer a { color:var(--amarillo); text-decoration:none; }
+  </style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <img class="splash-bowl" src="img/hero.jpg" alt="Buñuelitos Casa Madu" />
+  <div class="splash-logo">Casa<br>Madu</div>
+  <div class="splash-tag">Maduramos tu Sabor</div>
+  <div class="splash-credit">Desarrollada por Vibras Positivas HM — Derechos de Autor Reservados</div>
+</div>
+
+<!-- INSTALL BANNER -->
+<div id="install-banner">
+  <span>🏠</span>
+  <div class="ib-text">Instala Casa Madu
+    <small>Accede rápido desde tu pantalla de inicio</small>
+  </div>
+  <button class="ib-ok" id="btn-ins-ok">Instalar</button>
+  <button class="ib-no" id="btn-ins-no">✕</button>
+</div>
+
+<!-- HEADER -->
+<header>
+  <img class="hero-img" src="img/hero.jpg" alt="Buñuelitos de maduro Casa Madu" />
+  <div class="header-info">
+    <div class="logo-txt">
+      <span>Casa Madu</span>
+      <small>Maduramos tu Sabor</small>
+    </div>
+    <div class="badges">
+      <span class="badge">🫙 Artesanales</span>
+      <span class="badge">🌿 Sin Gluten</span>
+      <span class="badge">❄️ Congelados</span>
+      <span class="badge">❤️ Hechos con amor</span>
+    </div>
+  </div>
+</header>
+
+<div class="reloj-bar" id="reloj">⏰ Cargando...</div>
+<div class="aviso">📦 Paquetes x8 unidades — fáciles y rápidos de preparar</div>
+
+<!-- CONTENIDO -->
+<div id="main">
+  <div class="sec-titulo">
+    <h2>Buñuelitos de Maduro</h2>
+    <p>Elige tu sabor favorito y haz tu pedido por WhatsApp</p>
+  </div>
+  <div class="grid" id="grid"></div>
+  <footer>
+    📞 <a href="tel:3181427582">318 142 7582</a> &nbsp;|&nbsp;
+    <a href="https://wa.me/573181427582">WhatsApp</a><br><br>
+    Desarrollada por <a href="https://wa.me/573117700431">Vibras Positivas HM</a> — Derechos de Autor Reservados
+  </footer>
+</div>
+
+<!-- ÉXITO -->
+<div id="exito">
+  <img class="exito-img" src="img/hero.jpg" alt="Pedido enviado" />
+  <div class="exito-h">¡Pedido enviado! 🎉</div>
+  <div class="exito-p">Pronto nos comunicamos contigo.<br>¡Gracias por preferir Casa Madu!</div>
+  <button class="btn-volver" onclick="volverMenu()">Hacer otro pedido</button>
+</div>
+
+<!-- FAB -->
+<button class="carrito-fab" id="fab" onclick="abrirCarrito()">
+  🛒 <span id="fab-total">$0</span>
+  <span class="fab-badge" id="fab-count">0</span>
+</button>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="cerrarCarrito()"></div>
+
+<!-- DRAWER -->
+<div class="drawer" id="drawer">
+  <div class="handle"></div>
+  <div class="drawer-title">Tu Pedido 🍌</div>
+  <div id="d-items"></div>
+  <div class="drawer-total" id="d-total">
+    <span>Total:</span><b id="d-total-val">$0</b>
+  </div>
+  <div class="checkout" id="d-checkout" style="display:none">
+    <label class="lbl">Tu nombre *</label>
+    <input class="inp" id="i-nom" type="text" placeholder="Ej: María García" />
+    <label class="lbl">Tu WhatsApp *</label>
+    <input class="inp" id="i-tel" type="tel" placeholder="Ej: 3001234567" />
+    <label class="lbl">Dirección de entrega *</label>
+    <input class="inp" id="i-dir" type="text" placeholder="Barrio, calle, referencia..." />
+    <button class="btn-gps" id="btn-gps" onclick="obtenerGPS()">📍 Compartir ubicación GPS (opcional)</button>
+    <label class="lbl">Nota adicional</label>
+    <input class="inp" id="i-nota" type="text" placeholder="Ej: dejar en portería..." />
+    <button class="btn-wa" onclick="enviarPedido()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Enviar pedido por WhatsApp
+    </button>
+  </div>
+</div>
+
+<script>
+const PRODS = [
+  { id:'bocadillo', nombre:'Con Queso y Bocadillo', desc:'La combinación perfecta — queso derretido con dulce bocadillo 🍫', img:'img/bocadillo.jpg', precio:12000, strip:'s-verde', tag:'⭐ Más vendido', tagClass:'' },
+  { id:'queso',     nombre:'Queso Solo',            desc:'Suave, cremoso y clásico — el favorito de siempre 🧀',         img:'img/queso.jpg',    precio:12000, strip:'s-amarillo', tag:null },
+  { id:'tocineta',  nombre:'Queso y Tocineta',      desc:'Para los amantes del sabor intenso — crujiente y especial 🥓', img:'img/tocineta.jpg', precio:15000, strip:'s-naranja', tag:'🔥 Especial', tagClass:'esp' }
+];
+
+const carrito = {};
+let gps = null;
+
+function renderProductos() {
+  document.getElementById('grid').innerHTML = PRODS.map(p => `
+    <div class="card">
+      <div class="card-img-wrap">
+        <img class="card-img" src="${p.img}" alt="${p.nombre}" loading="lazy" />
+        ${p.tag ? `<span class="card-tag ${p.tagClass||''}">${p.tag}</span>` : ''}
+      </div>
+      <div class="card-strip ${p.strip}"></div>
+      <div class="card-body">
+        <div class="card-nombre">${p.nombre}</div>
+        <div class="card-desc">${p.desc}</div>
+        <div class="card-precio-row">
+          <span class="card-precio">${fmt(p.precio)}</span>
+          <span class="card-und">/ paquete x8 und</span>
+        </div>
+        <div class="card-controles">
+          <button class="btn-c" onclick="delta('${p.id}',-1)">−</button>
+          <span class="cant" id="c-${p.id}">0</span>
+          <button class="btn-c" onclick="delta('${p.id}',1)">+</button>
+          <button class="btn-add" id="a-${p.id}" onclick="agregar('${p.id}')">Agregar 🛒</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function delta(id, d) {
+  const el = document.getElementById('c-' + id);
+  el.textContent = Math.max(0, +el.textContent + d);
+}
+
+function agregar(id) {
+  const n = +document.getElementById('c-' + id).textContent;
+  if (!n) {
+    const el = document.getElementById('c-' + id);
+    el.style.color = 'red';
+    setTimeout(() => el.style.color = '', 700);
+    return;
+  }
+  const p = PRODS.find(x => x.id === id);
+  carrito[id] = carrito[id] ? { ...carrito[id], cant: carrito[id].cant + n } : { ...p, cant: n };
+  document.getElementById('c-' + id).textContent = '0';
+  const btn = document.getElementById('a-' + id);
+  btn.textContent = '✓ Agregado'; btn.classList.add('ok');
+  setTimeout(() => { btn.textContent = 'Agregar 🛒'; btn.classList.remove('ok'); }, 1500);
+  updateFAB();
+  if (navigator.vibrate) navigator.vibrate(40);
+}
+
+function updateFAB() {
+  const items = Object.values(carrito);
+  const total = items.reduce((s,i) => s + i.precio*i.cant, 0);
+  const count = items.reduce((s,i) => s + i.cant, 0);
+  document.getElementById('fab-total').textContent = fmt(total);
+  document.getElementById('fab-count').textContent = count;
+  document.getElementById('fab').classList.toggle('vis', count > 0);
+}
+
+function abrirCarrito() {
+  renderDrawer();
+  document.getElementById('overlay').classList.add('show');
+  document.getElementById('drawer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function cerrarCarrito() {
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('drawer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderDrawer() {
+  const items = Object.values(carrito);
+  const dTotal = document.getElementById('d-total');
+  const dCheck = document.getElementById('d-checkout');
+  if (!items.length) {
+    document.getElementById('d-items').innerHTML = '<div class="vacio">🍌 Tu carrito está vacío<br>¡Agrega unos buñuelitos!</div>';
+    dTotal.style.display = 'none'; dCheck.style.display = 'none'; return;
+  }
+  const total = items.reduce((s,i) => s + i.precio*i.cant, 0);
+  document.getElementById('d-items').innerHTML = items.map(i => `
+    <div class="ci">
+      <img class="ci-foto" src="${i.img}" alt="${i.nombre}" />
+      <div class="ci-info">
+        <div class="ci-nom">${i.nombre}</div>
+        <div class="ci-sub">${fmt(i.precio)} × ${i.cant} = <strong>${fmt(i.precio*i.cant)}</strong></div>
+      </div>
+      <div class="ci-ctls">
+        <button class="ci-btn" onclick="modC('${i.id}',-1)">−</button>
+        <span class="ci-q">${i.cant}</span>
+        <button class="ci-btn" onclick="modC('${i.id}',1)">+</button>
+      </div>
+    </div>`).join('');
+  document.getElementById('d-total-val').textContent = fmt(total);
+  dTotal.style.display = 'flex'; dCheck.style.display = 'block';
+}
+
+function modC(id, d) {
+  if (!carrito[id]) return;
+  carrito[id].cant += d;
+  if (carrito[id].cant <= 0) delete carrito[id];
+  updateFAB(); renderDrawer();
+}
+
+function obtenerGPS() {
+  const btn = document.getElementById('btn-gps');
+  btn.textContent = '⌛ Obteniendo...';
+  if (!navigator.geolocation) { btn.textContent = '❌ No disponible'; return; }
+  navigator.geolocation.getCurrentPosition(p => {
+    gps = { lat: p.coords.latitude, lng: p.coords.longitude };
+    btn.textContent = '✅ Ubicación compartida'; btn.classList.add('ok');
+  }, () => { btn.textContent = '❌ No se pudo obtener'; });
+}
+
+function enviarPedido() {
+  const nom  = document.getElementById('i-nom').value.trim();
+  const tel  = document.getElementById('i-tel').value.trim();
+  const dir  = document.getElementById('i-dir').value.trim();
+  const nota = document.getElementById('i-nota').value.trim();
+  if (!nom)  { alert('Ingresa tu nombre'); return; }
+  if (!tel)  { alert('Ingresa tu WhatsApp'); return; }
+  if (!dir)  { alert('Ingresa tu dirección'); return; }
+  const items = Object.values(carrito);
+  if (!items.length) { alert('El carrito está vacío'); return; }
+  const total = items.reduce((s,i) => s + i.precio*i.cant, 0);
+  const ahora = new Date().toLocaleString('es-CO',{timeZone:'America/Bogota'});
+  let msg = `🍌 *PEDIDO — CASA MADU*\n📅 ${ahora}\n\n`;
+  msg += `👤 *Cliente:* ${nom}\n📱 *WhatsApp:* ${tel}\n📍 *Dirección:* ${dir}\n`;
+  if (gps) msg += `🗺️ *GPS:* https://maps.google.com/?q=${gps.lat},${gps.lng}\n`;
+  msg += `\n🛒 *DETALLE:*\n`;
+  items.forEach(i => msg += `  • ${i.nombre} ×${i.cant} paq = ${fmt(i.precio*i.cant)}\n`);
+  msg += `\n💵 *TOTAL: ${fmt(total)}*\n`;
+  if (nota) msg += `\n📝 *Nota:* ${nota}\n`;
+  msg += `\n_Pedido desde la app Casa Madu_`;
+  window.open(`https://wa.me/573181427582?text=${encodeURIComponent(msg)}`, '_blank');
+  cerrarCarrito();
+  Object.keys(carrito).forEach(k => delete carrito[k]);
+  updateFAB();
+  document.getElementById('main').style.display = 'none';
+  document.getElementById('exito').classList.add('show');
+}
+
+function volverMenu() {
+  document.getElementById('exito').classList.remove('show');
+  document.getElementById('main').style.display = 'block';
+}
+
+function tick() {
+  document.getElementById('reloj').textContent =
+    '⏰ ' + new Date().toLocaleString('es-CO',{timeZone:'America/Bogota',weekday:'long',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+tick(); setInterval(tick, 1000);
+
+function fmt(n) { return '$' + n.toLocaleString('es-CO'); }
+
+window.addEventListener('load', () => {
+  renderProductos();
+  setTimeout(() => document.getElementById('splash').classList.add('hide'), 1800);
+});
+
+let dP = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault(); dP = e;
+  setTimeout(() => document.getElementById('install-banner').classList.add('show'), 3500);
+});
+document.getElementById('btn-ins-ok').addEventListener('click', () => {
+  if (dP) { dP.prompt(); dP.userChoice.then(() => dP = null); }
+  document.getElementById('install-banner').classList.remove('show');
+});
+document.getElementById('btn-ins-no').addEventListener('click', () =>
+  document.getElementById('install-banner').classList.remove('show'));
+
+if ('serviceWorker' in navigator)
+  navigator.serviceWorker.register('sw.js').catch(console.error);
+</script>
+</body>
+</html>
